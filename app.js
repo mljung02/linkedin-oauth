@@ -55,7 +55,7 @@ passport.deserializeUser(function(user, done) {
 });
 
 app.use('/', routes);
-// app.use('/', authRoutes);
+app.use('/', authRoutes);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
