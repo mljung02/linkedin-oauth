@@ -4,22 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var passport = require('passport');
+var passport = require('passport')
+require('dotenv').load();
+var session = require('cookie-session')
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var session = require('cookie-session');
-require('dotenv').load()
-var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
 var authRoutes = require('./routes/auth');
-
+var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
 
 var app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.use(session({ keys: [process.env.SESSION_KEY1, process.env.SESSION_KEY2] }))
 app.set('view engine', 'jade');
-
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -29,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({ keys: [process.env.KEY1, process.env.KEY2] }))
 
 // above app.use('/', routes);
 app.use(passport.initialize());
@@ -42,7 +42,9 @@ passport.use(new LinkedInStrategy({
     state: true
   },
   function(accessToken, refreshToken, profile, done) {
-    done(null, {id: profile.id, displayName: profile.displayName, token: accessToken})
+    process.nextTick(function () {
+      done(null, {id: profile.id, displayName: profile.displayName, token: accessToken})
+    })
   }
 ));
 
