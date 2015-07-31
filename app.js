@@ -12,6 +12,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var authRoutes = require('./routes/auth');
 var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
+var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 
 var app = express();
 
@@ -43,10 +44,26 @@ passport.use(new LinkedInStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
+      console.log(profile)  
       done(null, {id: profile.id, displayName: profile.displayName, token: accessToken})
     })
   }
 ));
+
+passport.use(new GoogleStrategy({
+    clientID:     process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/callback",
+    passReqToCallback   : true
+  },
+  function(request, accessToken, refreshToken, profile, done) {
+    process.nextTick(function () {
+      console.log(profile)  
+      done(null, {id: profile.id, displayNameYo: profile.displayName, token: accessToken, picture: profile.photos[0].value})
+    })
+  }
+));
+
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -57,9 +74,9 @@ passport.deserializeUser(function(user, done) {
 });
 
 app.use(function (req, res, next) {
-  console.log(req)
-  res.locals.user = req.user
-  next()
+  console.log(req.user)
+  res.locals.user = req.user;
+  next();
 })
 
 app.use('/', routes);

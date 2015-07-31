@@ -1,5 +1,6 @@
 extends layout
 
 block content
-  if profile
-    img(src=profile.pictureUrl)
+  if user
+    p khi #{user.displayNameYo}
+    img(src=user.picture)

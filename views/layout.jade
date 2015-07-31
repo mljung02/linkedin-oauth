@@ -6,10 +6,11 @@ html
   body
     if user
       p
-        |Hello #{user.displayName}
+        |Hello #{user.displayNameYo}
         ||
         a(href="/logout") Logout
     else
       p
-        a(href="/auth/linkedin") Login
+        a(href="/auth/linkedin") Login With linkedin
+        a(href="/auth/google") Login With the googs
     block content
